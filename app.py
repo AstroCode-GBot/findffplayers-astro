@@ -11,7 +11,7 @@ from Crypto.Util.Padding import pad, unpad
 import httpx
 
 import Find_NearByPlayers_pb2
-import blackboxprotobuf
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
