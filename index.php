@@ -1,0 +1,504 @@
+<?php
+/**
+ * Astro Ultimate Edition - Server Side Security Layer
+ * 2026 Elite Liquid Setup
+ */
+
+// ১. সার্ভার লেভেলে ভিউ-সোর্স বা বট ট্র্যাফিক আংশিক ব্লক করার চেষ্টা
+$user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+$blocked_agents = ['curl', 'wget', 'python', 'scrape', 'spider', 'headlesschrome'];
+
+foreach ($blocked_agents as $agent) {
+    if (stripos($user_agent, $agent) !== false) {
+        http_response_code(403);
+        die("Security Alert: Direct source access denied.");
+    }
+}
+
+// ২. যদি কোনো সংবেদনশীল কনফিগারেশন থাকে, তা সার্ভার সাইডেই রাখা নিরাপদ
+$system_version = "v2.5 Elite Liquid";
+$app_release = "OB54";
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Astro FF Finder | Apple Liquid Elite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        apple: {
+                            blue: '#007AFF',
+                            gray: '#8E8E93',
+                            lightBg: '#F5F5F7',
+                            darkBg: '#000000',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body { -webkit-font-smoothing: antialiased; letter-spacing: -0.015em; }
+        
+        /* Apple Liquid Glass Effect */
+        .liquid-glass { 
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(35px) saturate(210%);
+            -webkit-backdrop-filter: blur(35px) saturate(210%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .liquid-glass { 
+            background: rgba(28, 28, 30, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Map UI Rounded Fix */
+        .map-frame {
+            border-radius: 35px;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .dark .map-frame { border: 5px solid #1c1c1e; }
+        
+        .map-chip {
+            padding: 8px 14px; font-size: 10px; font-weight: 700; border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.05); color: #666;
+        }
+        .dark .map-chip { background: rgba(255,255,255,0.1); color: #aaa; }
+        .map-chip.active { background: #000; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .dark .map-chip.active { background: #007AFF; color: #fff; }
+
+        /* Scrollbar styling */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+
+        .player-card {
+            transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+        .player-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Security Overlay Style */
+        #security-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #F5F5F7;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .dark #security-overlay { background: #000000; }
+    </style>
+</head>
+<body class="bg-apple-lightBg dark:bg-apple-darkBg text-zinc-900 dark:text-zinc-100 min-h-screen flex flex-col">
+
+    <div id="security-overlay">
+        <div class="liquid-glass p-12 rounded-[40px] border border-white/20 shadow-2xl max-w-md mx-4">
+            <div class="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-shield-slash text-red-500 text-4xl"></i>
+            </div>
+            <h2 class="text-2xl font-black mb-2 uppercase tracking-tight">Security Alert</h2>
+            <p class="text-apple-gray text-sm font-bold mb-8">Developer Tools detected. Access to the matrix has been terminated to protect the source code.</p>
+            <button onclick="location.reload()" class="w-full bg-black dark:bg-white text-white dark:text-black font-black py-4 rounded-2xl transition-all">Reload System</button>
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-[1001] w-full liquid-glass border-b border-black/5 dark:border-white/10">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-satellite text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tighter text-black dark:text-white leading-none">ASTRO <span class="text-apple-blue italic">ULTIMATE</span></h1>
+                    <p class="text-[9px] text-apple-gray font-bold uppercase tracking-[2px]">Premium Telemetry</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div id="ip-indicator" class="hidden sm:flex items-center bg-black/5 dark:bg-white/10 px-3 py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+                    <span id="nav-ip" class="text-[10px] font-bold font-mono opacity-60">0.0.0.0</span>
+                </div>
+                <button onclick="toggleSettingsPanel()" class="w-10 h-10 rounded-2xl bg-black/5 flex items-center justify-center transition-all"><i class="fa-solid fa-gear text-sm"></i></button>
+                <button onclick="toggleThemeMode()" class="w-10 h-10 rounded-2xl bg-black/5 flex items-center justify-center transition-all"><i id="theme-icon" class="fa-solid fa-moon text-sm"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-8 space-y-8">
+        
+        <div class="liquid-glass rounded-[32px] p-6 flex flex-col md:flex-row justify-between items-center border border-white/20 shadow-sm">
+            <div class="flex items-center space-x-5">
+                <div class="w-12 h-12 bg-apple-blue/10 flex items-center justify-center rounded-2xl">
+                    <i class="fa-brands fa-telegram text-apple-blue text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] text-apple-gray font-black uppercase tracking-widest">Main Communication</p>
+                    <a href="https://t.me/NCBLACKBIRD" target="_blank" class="text-lg font-black hover:text-apple-blue transition-colors">t.me/NCBLACKBIRD</a>
+                </div>
+            </div>
+            <div class="flex gap-4 mt-6 md:mt-0">
+                <div class="text-center px-6 py-2 bg-white/50 dark:bg-black/20 rounded-2xl border border-black/5">
+                    <p class="text-[9px] text-apple-gray font-black uppercase">System Version</p>
+                    <p class="text-xs font-bold uppercase tracking-tighter"><?php echo $system_version; ?></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="settings-card-panel" class="hidden fixed inset-x-4 top-20 z-[1002] liquid-glass rounded-[40px] max-w-2xl mx-auto overflow-hidden border border-white/20 shadow-2xl">
+            <div class="px-10 py-8 border-b border-black/5 flex justify-between items-center">
+                <h2 class="text-2xl font-black">Configuration</h2>
+                <button onclick="toggleSettingsPanel()" class="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-10 space-y-8">
+                <div class="space-y-3">
+                    <label class="text-xs font-black text-apple-gray uppercase tracking-widest">Authentication JWT</label>
+                    <textarea id="inp-garena-jwt" rows="3" class="w-full bg-black/5 dark:bg-white/5 rounded-[24px] p-5 text-xs font-mono outline-none border border-black/5" placeholder="Enter Garena Token..."></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-apple-gray uppercase">App Release</label>
+                        <input type="text" id="inp-release-version" value="<?php echo $app_release; ?>" class="w-full bg-black/5 rounded-2xl p-4 text-sm font-bold">
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-apple-gray uppercase">Asset Pipeline</label>
+                        <input type="text" id="inp-banner-api" value="" class="w-full bg-black/5 rounded-2xl p-4 text-sm font-bold">
+                    </div>
+                </div>
+                <button onclick="saveManualJwtConfig()" class="w-full bg-apple-blue text-white font-black py-5 rounded-[24px] shadow-xl hover:brightness-110 active:scale-95 transition-all">Update System Matrix</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <div class="lg:col-span-4 space-y-6">
+                <div class="liquid-glass rounded-[48px] p-7 border border-white/20 space-y-8">
+                    
+                    <div class="map-frame h-80 relative">
+                        <div class="absolute top-4 left-4 right-4 z-[1000] flex flex-wrap gap-2">
+                            <button id="btn-sat" class="map-chip active" onclick="changeMapLayer('satellite')">Satellite</button>
+                            <button id="btn-vec" class="map-chip" onclick="changeMapLayer('vector')">Vector</button>
+                            <button id="btn-mid" class="map-chip" onclick="changeMapLayer('midnight')">Midnight</button>
+                        </div>
+                        <div id="map" class="h-full w-full"></div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-apple-gray uppercase tracking-widest ml-1">Latitude</label>
+                                <input type="text" id="inp-lat" value="23.950300" onchange="manualCoordChange()" class="w-full bg-black/5 dark:bg-white/5 rounded-2xl p-4 text-xs font-black border border-black/5">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-apple-gray uppercase tracking-widest ml-1">Longitude</label>
+                                <input type="text" id="inp-lng" value="90.380300" onchange="manualCoordChange()" class="w-full bg-black/5 dark:bg-white/5 rounded-2xl p-4 text-xs font-black border border-black/5">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-apple-gray uppercase tracking-widest ml-1">IP Node Gateway</label>
+                            <input type="text" id="inp-ip" value="Detecting..." class="w-full bg-black/5 dark:bg-white/5 rounded-2xl py-4 px-5 text-xs font-mono font-black border border-black/5">
+                        </div>
+                    </div>
+
+                    <button id="scan-btn" onclick="triggerRadarScan()" class="w-full bg-black dark:bg-white text-white dark:text-black font-black py-5 rounded-[28px] shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4">
+                        <i id="scan-icon" class="fa-solid fa-radar text-lg"></i> <span>Scan Perimeter</span>
+                    </button>
+                </div>
+
+                <button onclick="autoSyncTelemetry()" class="w-full liquid-glass py-5 rounded-[32px] text-xs font-black flex items-center justify-center gap-3 shadow-sm">
+                    <i id="sync-icon" class="fa-solid fa-location-arrow text-apple-blue"></i> Sync My Location
+                </button>
+            </div>
+
+            <div class="lg:col-span-8 h-full">
+                <div class="liquid-glass rounded-[56px] p-10 border border-white/20 min-h-[720px] flex flex-col">
+                    <div class="flex justify-between items-end mb-10 border-b border-black/5 pb-8">
+                        <div>
+                            <h2 class="text-3xl font-black tracking-tighter">Active Feed</h2>
+                            <p class="text-sm text-apple-gray font-bold">Real-time database discovery</p>
+                        </div>
+                        <div class="bg-apple-blue text-white text-[11px] font-black px-5 py-2 rounded-full uppercase tracking-widest">
+                            <span id="target-count">0</span> Detected
+                        </div>
+                    </div>
+
+                    <div id="card-scroll-area" class="flex-1 overflow-y-auto custom-scroll pr-2">
+                        <div id="card-layout-view" class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-10">
+                            <div id="fallback-message" class="col-span-full flex flex-col items-center justify-center py-40 opacity-10">
+                                <i class="fa-solid fa-dna text-8xl mb-6"></i>
+                                <p class="text-lg font-black uppercase tracking-[8px]">Scan Required</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="py-12 text-center opacity-30">
+        <p class="text-[10px] font-black uppercase tracking-[6px]">Astro Ultimate Edition &copy; 2026</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // ================= SECURITY LAYER =================
+        // Disable Right Click
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Disable Keyboard Shortcuts
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123) return false; // F12
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false; // Inspect
+            if (e.ctrlKey && e.keyCode == 85) return false; // View Source
+        };
+
+        // Detect Developer Tools and Block Access
+        const detectDevTools = () => {
+            const widthThreshold = window.outerWidth - window.innerWidth > 160;
+            const heightThreshold = window.outerHeight - window.innerHeight > 160;
+
+            if (widthThreshold || heightThreshold) {
+                document.getElementById('main-content').style.display = 'none';
+                document.querySelector('header').style.display = 'none';
+                document.querySelector('footer').style.display = 'none';
+                document.getElementById('security-overlay').style.display = 'flex';
+            }
+        };
+
+        // Continuous Check
+        setInterval(detectDevTools, 500);
+
+        // Anti-Debugger (Freeze Console)
+        (function() {
+            const block = function() {
+                setInterval(function() {
+                    debugger;
+                }, 50);
+            };
+            try { block(); } catch (err) {}
+        })();
+        // ================= END SECURITY =================
+
+        let map, marker, currentTileLayer;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            initDefaultMap(23.950300, 90.380300);
+            await loadExistingConfig();
+            await autoDetectIP();
+        });
+
+        async function autoDetectIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                document.getElementById("inp-ip").value = data.ip;
+                document.getElementById("nav-ip").innerText = data.ip;
+                document.getElementById("ip-indicator").classList.remove("hidden");
+            } catch (e) {
+                document.getElementById("inp-ip").value = "103.198.132.204";
+            }
+        }
+
+        function initDefaultMap(lat, lng) {
+            map = L.map('map', { 
+                attributionControl: false, zoomControl: false, scrollWheelZoom: true, maxZoom: 22 
+            }).setView([lat, lng], 13);
+            currentTileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                maxNativeZoom: 18, maxZoom: 22
+            }).addTo(map);
+            marker = L.marker([lat, lng]).addTo(map);
+        }
+
+        function changeMapLayer(mode) {
+            if (currentTileLayer) map.removeLayer(currentTileLayer);
+            document.querySelectorAll('.map-chip').forEach(c => c.classList.remove('active'));
+            let url;
+            if(mode === 'vector') {
+                url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                document.getElementById('btn-vec').classList.add('active');
+            } else if(mode === 'midnight') {
+                url = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+                document.getElementById('btn-mid').classList.add('active');
+            } else {
+                url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+                document.getElementById('btn-sat').classList.add('active');
+            }
+            currentTileLayer = L.tileLayer(url, { maxNativeZoom: 19, maxZoom: 22 }).addTo(map);
+        }
+
+        function toggleThemeMode() {
+            document.documentElement.classList.toggle("dark");
+            const icon = document.getElementById("theme-icon");
+            icon.className = document.documentElement.classList.contains("dark") ? "fa-solid fa-sun text-sm" : "fa-solid fa-moon text-sm";
+        }
+
+        function toggleSettingsPanel() {
+            document.getElementById("settings-card-panel").classList.toggle("hidden");
+        }
+
+        function manualCoordChange() {
+            const lat = parseFloat(document.getElementById("inp-lat").value);
+            const lng = parseFloat(document.getElementById("inp-lng").value);
+            if(lat && lng) { map.setView([lat, lng], 16); marker.setLatLng([lat, lng]); }
+        }
+
+        async function autoSyncTelemetry() {
+            document.getElementById("sync-icon").classList.add("fa-spin");
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const lat = pos.coords.latitude; const lng = pos.coords.longitude;
+                document.getElementById("inp-lat").value = lat.toFixed(6);
+                document.getElementById("inp-lng").value = lng.toFixed(6);
+                map.setView([lat, lng], 16); marker.setLatLng([lat, lng]);
+                document.getElementById("sync-icon").classList.remove("fa-spin");
+            });
+        }
+
+        function copyData(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const icon = btn.querySelector('i');
+                const old = icon.className;
+                icon.className = "fa-solid fa-check text-emerald-500";
+                setTimeout(() => icon.className = old, 1500);
+            });
+        }
+
+        async function triggerRadarScan() {
+            const btn = document.getElementById("scan-btn");
+            const icon = document.getElementById("scan-icon");
+            const cardLayout = document.getElementById("card-layout-view");
+
+            btn.disabled = true;
+            icon.className = "fa-solid fa-circle-notch fa-spin";
+
+            const payload = {
+                lat: parseFloat(document.getElementById("inp-lat").value),
+                lng: parseFloat(document.getElementById("inp-lng").value),
+                distance: 9000,
+                ip: document.getElementById("inp-ip").value,
+                gender: 999
+            };
+
+            try {
+                const res = await fetch(`${window.location.origin}/api/scan`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                
+                btn.disabled = false;
+                icon.className = "fa-solid fa-radar";
+
+                if (data.status === "success" && data.players.length > 0) {
+                    document.getElementById("target-count").innerText = data.players.length;
+                    cardLayout.innerHTML = "";
+                    data.players.forEach((p, index) => {
+                        const card = document.createElement("div");
+                        card.className = "player-card liquid-glass rounded-[40px] overflow-hidden group border border-white/20";
+                        
+                        // প্রজেক্ট ও এপিআই কনফিগারেশনের সামঞ্জস্য রেখে ইমেজ হ্যান্ডলিং ফিক্সড
+                        const uniqueImgId = `player-img-${p.UID}-${index}`;
+                        const bannerPlaceholder = 'https://via.placeholder.com/1633x400/1c1c1e/ffffff?text=No+Data';
+
+                        card.innerHTML = `
+                            <div class="relative w-full aspect-[1633/400] overflow-hidden bg-black">
+                                <img id="${uniqueImgId}" src="${bannerPlaceholder}" class="w-full h-full object-fill transition-transform duration-[2s] group-hover:scale-105">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                            </div>
+                            <div class="p-7 space-y-5">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center gap-3 overflow-hidden">
+                                        <h3 class="font-black text-xl tracking-tight uppercase truncate text-black dark:text-white">${p.Name}</h3>
+                                        <span class="bg-apple-blue/10 text-apple-blue text-[10px] font-black px-2 py-1 rounded-lg border border-apple-blue/20 flex-shrink-0">LV ${p.Level}</span>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-shield-check text-emerald-500 text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="relative bg-black/5 dark:bg-white/5 p-4 rounded-3xl border border-black/5">
+                                    <p class="text-[11px] font-bold italic opacity-60 leading-relaxed pr-8">"${p.Signature || 'No Bio Record Found'}"</p>
+                                    <button onclick="copyData('${p.Signature || ""}', this)" class="absolute top-4 right-4 opacity-40 hover:opacity-100 transition-opacity"><i class="fa-solid fa-copy text-[10px]"></i></button>
+                                </div>
+                                <div class="flex items-center justify-between bg-zinc-100 dark:bg-white/10 p-3 rounded-2xl border border-black/5">
+                                    <span class="text-[11px] font-black font-mono ml-2 opacity-50 tracking-tighter">UID: ${p.UID}</span>
+                                    <button onclick="copyData('${p.UID}', this)" class="w-10 h-10 flex items-center justify-center bg-white dark:bg-black rounded-xl shadow-sm hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-copy text-[11px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        cardLayout.appendChild(card);
+                        gsap.from(card, { y: 20, opacity: 0, delay: Math.min(index * 0.05, 1), duration: 0.5 });
+
+                        // নতুন ব্যানার API থেকে ইমেজ URL বের করে ব্যাকগ্রাউন্ডে লোড করার ফিক্সড লজিক
+                        if (p.profile_img) {
+                            fetch(p.profile_img)
+                                .then(response => response.json())
+                                .then(imgData => {
+                                    if (imgData && imgData.url) {
+                                        document.getElementById(uniqueImgId).src = imgData.url;
+                                    }
+                                })
+                                .catch(() => {
+                                    // এপিআই সরাসরি ইমেজ রিটার্ন করলে বা ফেইলড হলে ফলব্যাক হিসেবে ডাইরেক্ট লিঙ্ক অ্যাসাইন করা হচ্ছে
+                                    document.getElementById(uniqueImgId).src = p.profile_img;
+                                });
+                        }
+                    });
+                } else {
+                    cardLayout.innerHTML = `<div class="col-span-full text-center py-20 opacity-30 font-black uppercase tracking-[8px]">Scan Empty</div>`;
+                }
+            } catch (err) {
+                btn.disabled = false; icon.className = "fa-solid fa-radar";
+                cardLayout.innerHTML = `<div class="col-span-full text-center py-10 text-red-500 font-bold uppercase">Network Node Error</div>`;
+            }
+        }
+
+        async function saveManualJwtConfig() {
+            const payload = {
+                jwt: document.getElementById("inp-garena-jwt").value,
+                release_version: document.getElementById("inp-release-version").value,
+                banner_url: document.getElementById("inp-banner-api").value
+            };
+            await fetch(`${window.location.origin}/api/update-config`, {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            toggleSettingsPanel();
+        }
+
+        async function loadExistingConfig() {
+            try {
+                const res = await fetch(`${window.location.origin}/api/get-config`); 
+                if (res.ok) {
+                    const config = await res.json();
+                    if (config.jwt) document.getElementById("inp-garena-jwt").value = config.jwt;
+                    if (config.release_version) document.getElementById("inp-release-version").value = config.release_version;
+                    if (config.banner_url) document.getElementById("inp-banner-api").value = config.banner_url;
+                }
+            } catch (e) {}
+        }
+    </script>
+</body>
+</html>
