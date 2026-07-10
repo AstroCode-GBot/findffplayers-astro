@@ -204,4 +204,7 @@ async def scan_players(data: RadarRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    # Render ডাইনামিকালি PORT এনভায়রনমেন্ট ভ্যারিয়েবল পাস করে
+    port = int(os.environ.get("PORT", 8000))
+    # Host অবশ্যই 0.0.0.0 দিতে হবে যেন বাইর থেকে অ্যাক্সেস করা যায়
+    uvicorn.run(app, host="0.0.0.0", port=port)
