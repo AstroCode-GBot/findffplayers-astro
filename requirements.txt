@@ -6,4 +6,4 @@ aiohttp
 httpx
 pycryptodome
 blackboxprotobuf
-protobuf>=6.28.0
+protobuf
