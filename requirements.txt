@@ -5,5 +5,5 @@ requests
 aiohttp
 httpx
 pycryptodome
+protobuf==4.25.3
 blackboxprotobuf
-protobuf
