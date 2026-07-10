@@ -1,8 +1,8 @@
-fastapi==0.111.0
-uvicorn==0.30.1
-pydantic==2.7.4
-requests==2.32.3
-aiohttp==3.9.5
+fastapi
+uvicorn
+pydantic
+requests
+aiohttp
 httpx
 pycryptodome
 blackboxprotobuf
